@@ -29,6 +29,20 @@ public class TagDataFetcher {
     }
 
     @DgsMutation
+    public Tag updateTag(
+            @InputArgument Long id,
+            @InputArgument String name
+    ) {
+        return repository.findById(id)
+                .map(tag -> {
+                    tag.setName(name);          // ubah kolom yang perlu di-update
+                    return repository.save(tag);
+                })
+                .orElseThrow(() ->
+                        new RuntimeException("Tag dengan id " + id + " tidak ditemukan"));
+    }
+
+    @DgsMutation
     public Boolean deleteTag(@InputArgument Long id) {
         repository.deleteById(id);
         return true;
