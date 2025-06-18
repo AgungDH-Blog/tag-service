@@ -9,6 +9,13 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-
+  graphql:
+    graphiql:
+      enabled: true        # aktifkan UI
 server:
   port: 8080
+  # opsional: ekspor SDL setiap build
+dgs:
+  graphql:
+    schema-print:
+      enabled: true        # menghasilkan build/schema.graphql
