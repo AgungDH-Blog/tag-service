@@ -1,27 +1,32 @@
 # ──────────── 1) Build stage ────────────
-# Maven + JDK 21 (apa pun vendor) untuk compile; di sini pakai Eclipse Temurin.
-FROM maven:3.9.7-eclipse-temurin-21 AS build
+FROM bellsoft/liberica-openjdk-alpine:21 AS build
 
 WORKDIR /app
-COPY pom.xml mvnw* ./
-COPY .mvn .mvn
-COPY src src
 
-# Build jar – skip test agar cepat; hilangkan opsi ini jika perlu menjalankan test.
-RUN mvn -B -DskipTests clean package
+# Salin Maven wrapper lebih dulu lalu beri izin eksekusi
+COPY mvnw ./
+RUN chmod +x mvnw
+COPY .mvn .mvn
+COPY pom.xml ./
+
+# Ambil dependensi dulu agar cache efektif
+RUN ./mvnw -B -DskipTests dependency:go-offline
+
+# Salin kode sumber & build
+COPY src src
+RUN ./mvnw -B -DskipTests clean package
 
 # ──────────── 2) Runtime stage ────────────
-# BellSoft Liberica **runtime** (hanya JRE) Java 21, varian Alpine musl (≈ 60 MB).
 FROM bellsoft/liberica-runtime-container:jre-21-slim-musl AS runtime
 
-# (Opsional) tambahkan user non-root demi keamanan
+# (Opsional) jalankan sebagai non-root demi keamanan
 RUN addgroup -S spring && adduser -S spring -G spring
 USER spring
 
 WORKDIR /app
 COPY --from=build /app/target/*-SNAPSHOT.jar app.jar
 
-# Lingkungan & tunable dasar
+# Lingkungan dasar JVM
 ENV TZ=Asia/Jakarta \
     JAVA_TOOL_OPTIONS="-XX:+UseContainerSupport"
 
