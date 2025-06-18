@@ -1,0 +1,14 @@
+type Tag @key(fields: "id") {
+    id: ID!
+    name: String!
+}
+
+type Query {
+    tagById(id: ID!): Tag
+    tags: [Tag]
+}
+
+type Mutation {
+    createTag(name: String!): Tag
+    deleteTag(id: ID!): Boolean
+}
