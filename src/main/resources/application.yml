@@ -3,8 +3,8 @@ spring:
     name: blog-tag-service
   datasource:
     url: jdbc:mariadb://localhost:3306/tag
-    username: root
-    password: root
+    username: admin
+    password: admin
   jpa:
     hibernate:
       ddl-auto: update
