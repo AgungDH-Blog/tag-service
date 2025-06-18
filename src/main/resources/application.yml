@@ -19,3 +19,14 @@ dgs:
   graphql:
     schema-print:
       enabled: true        # menghasilkan build/schema.graphql
+management:
+  server:
+    port: 8081        # port untuk manajemen
+  endpoints:
+    web:
+      exposure:
+        include: health, info        # atau '*' kalau mau semua
+  endpoint:
+    health:
+      probes:
+        enabled: true
