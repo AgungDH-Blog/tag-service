@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: blog-tag-service
+  datasource:
+    url: jdbc:mariadb://localhost:3306/blog_tag
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+server:
+  port: 8080
